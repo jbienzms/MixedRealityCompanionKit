@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using System;
 using UnityEngine;
-using UnityEngine.VR.WSA.Input;
+using UnityEngine.XR.WSA.Input;
 
 namespace PosterAlignment.InputUtilities
 {
@@ -42,12 +42,12 @@ namespace PosterAlignment.InputUtilities
         }
 
         public Mode recognizerType = Mode.Manipulation;
-        private GestureRecognizer activeRecognizer = null;
+        private UnityEngine.XR.WSA.Input.GestureRecognizer activeRecognizer = null;
 
-        private GestureRecognizer navigationRecognizer = null;
+        private UnityEngine.XR.WSA.Input.GestureRecognizer navigationRecognizer = null;
         private Vector3 navigationPosition = Vector3.zero;
 
-        private GestureRecognizer manipulationRecognizer = null;
+        private UnityEngine.XR.WSA.Input.GestureRecognizer manipulationRecognizer = null;
         private Vector3 manipulationPosition = Vector3.zero;
         private Vector3 manipulationPrevious = Vector3.zero;
 
@@ -66,62 +66,60 @@ namespace PosterAlignment.InputUtilities
         private void Awake()
         {
             // Instantiate the Navigation recognizer
-            this.navigationRecognizer = new GestureRecognizer();
+            this.navigationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
             this.navigationRecognizer.SetRecognizableGestures(
-                GestureSettings.Tap |
-                GestureSettings.DoubleTap |
-                GestureSettings.NavigationX | GestureSettings.NavigationY | GestureSettings.NavigationZ);
-            this.navigationRecognizer.TappedEvent += this.Recognizer_TappedEvent;
-            this.navigationRecognizer.NavigationStartedEvent += this.NavigationRecognizer_NavigationStartedEvent;
-            this.navigationRecognizer.NavigationUpdatedEvent += this.NavigationRecognizer_NavigationUpdatedEvent;
-            this.navigationRecognizer.NavigationCompletedEvent += this.NavigationRecognizer_NavigationCompletedEvent;
-            this.navigationRecognizer.NavigationCanceledEvent += this.NavigationRecognizer_NavigationCanceledEvent;
+                UnityEngine.XR.WSA.Input.GestureSettings.Tap |
+                UnityEngine.XR.WSA.Input.GestureSettings.DoubleTap |
+                UnityEngine.XR.WSA.Input.GestureSettings.NavigationX | UnityEngine.XR.WSA.Input.GestureSettings.NavigationY | UnityEngine.XR.WSA.Input.GestureSettings.NavigationZ);
+            this.navigationRecognizer.Tapped += this.Recognizer_Tapped;
+            this.navigationRecognizer.NavigationStarted += this.NavigationRecognizer_NavigationStarted;
+            this.navigationRecognizer.NavigationUpdated += this.NavigationRecognizer_NavigationUpdated;
+            this.navigationRecognizer.NavigationCompleted += this.NavigationRecognizer_NavigationCompleted;
+            this.navigationRecognizer.NavigationCanceled += this.NavigationRecognizer_NavigationCanceled;
 
             // Instantiate the Manipulation Recognizer.
-            this.manipulationRecognizer = new GestureRecognizer();
+            this.manipulationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
             this.manipulationRecognizer.SetRecognizableGestures(
-                GestureSettings.Tap |
-                GestureSettings.DoubleTap |
-                GestureSettings.ManipulationTranslate);
-            this.manipulationRecognizer.TappedEvent += this.Recognizer_TappedEvent;
-            this.manipulationRecognizer.ManipulationStartedEvent += this.ManipulationRecognizer_ManipulationStartedEvent;
-            this.manipulationRecognizer.ManipulationUpdatedEvent += this.ManipulationRecognizer_ManipulationUpdatedEvent;
-            this.manipulationRecognizer.ManipulationCompletedEvent += this.ManipulationRecognizer_ManipulationCompletedEvent;
-            this.manipulationRecognizer.ManipulationCanceledEvent += this.ManipulationRecognizer_ManipulationCanceledEvent;
+                UnityEngine.XR.WSA.Input.GestureSettings.Tap |
+                UnityEngine.XR.WSA.Input.GestureSettings.DoubleTap |
+                UnityEngine.XR.WSA.Input.GestureSettings.ManipulationTranslate);
+            this.manipulationRecognizer.Tapped += this.Recognizer_Tapped;
+            this.manipulationRecognizer.ManipulationStarted += this.ManipulationRecognizer_ManipulationStarted;
+            this.manipulationRecognizer.ManipulationUpdated += this.ManipulationRecognizer_ManipulationUpdated;
+            this.manipulationRecognizer.ManipulationCompleted += this.ManipulationRecognizer_ManipulationCompleted;
+            this.manipulationRecognizer.ManipulationCanceled += this.ManipulationRecognizer_ManipulationCanceled;
 
             // interaction manager state handling
-            InteractionManager.SourcePressed += InteractionManager_SourcePressed;
-            InteractionManager.SourceReleased += InteractionManager_SourceReleased;
+            InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
         }
 
-        private void OnDestroy()
+		private void OnDestroy()
         {
             if (this.navigationRecognizer != null)
             {
-                this.navigationRecognizer.TappedEvent -= this.Recognizer_TappedEvent;
-                this.navigationRecognizer.NavigationStartedEvent -= this.NavigationRecognizer_NavigationStartedEvent;
-                this.navigationRecognizer.NavigationUpdatedEvent -= this.NavigationRecognizer_NavigationUpdatedEvent;
-                this.navigationRecognizer.NavigationCompletedEvent -= this.NavigationRecognizer_NavigationCompletedEvent;
-                this.navigationRecognizer.NavigationCanceledEvent -= this.NavigationRecognizer_NavigationCanceledEvent;
+                this.navigationRecognizer.Tapped -= this.Recognizer_Tapped;
+                this.navigationRecognizer.NavigationStarted -= this.NavigationRecognizer_NavigationStarted;
+                this.navigationRecognizer.NavigationUpdated -= this.NavigationRecognizer_NavigationUpdated;
+                this.navigationRecognizer.NavigationCompleted -= this.NavigationRecognizer_NavigationCompleted;
+                this.navigationRecognizer.NavigationCanceled -= this.NavigationRecognizer_NavigationCanceled;
             }
 
             if (this.manipulationRecognizer != null)
             {
-                this.manipulationRecognizer.TappedEvent -= this.Recognizer_TappedEvent;
-                this.manipulationRecognizer.ManipulationStartedEvent -= this.ManipulationRecognizer_ManipulationStartedEvent;
-                this.manipulationRecognizer.ManipulationUpdatedEvent -= this.ManipulationRecognizer_ManipulationUpdatedEvent;
-                this.manipulationRecognizer.ManipulationCompletedEvent -=
-                    this.ManipulationRecognizer_ManipulationCompletedEvent;
-                this.manipulationRecognizer.ManipulationCanceledEvent -=
-                    this.ManipulationRecognizer_ManipulationCanceledEvent;
+                this.manipulationRecognizer.Tapped -= this.Recognizer_Tapped;
+                this.manipulationRecognizer.ManipulationStarted -= this.ManipulationRecognizer_ManipulationStarted;
+                this.manipulationRecognizer.ManipulationUpdated -= this.ManipulationRecognizer_ManipulationUpdated;
+                this.manipulationRecognizer.ManipulationCompleted -= this.ManipulationRecognizer_ManipulationCompleted;
+                this.manipulationRecognizer.ManipulationCanceled -= this.ManipulationRecognizer_ManipulationCanceled;
             }
 
-            // interaction manager state handling
-            InteractionManager.SourcePressed -= InteractionManager_SourcePressed;
-            InteractionManager.SourceReleased -= InteractionManager_SourceReleased;
-        }
+			// interaction manager state handling
+			InteractionManager.InteractionSourcePressed -= InteractionManager_InteractionSourcePressed;
+			InteractionManager.InteractionSourceReleased -= InteractionManager_InteractionSourceReleased;
+		}
 
-        private void OnEnable()
+		private void OnEnable()
         {
             this.ResetGestureRecognizer(this.GestureMode);
         }
@@ -146,7 +144,7 @@ namespace PosterAlignment.InputUtilities
             this.recognizerType = type;
         }
 
-        private void Transition(GestureRecognizer newRecognizer)
+        private void Transition(UnityEngine.XR.WSA.Input.GestureRecognizer newRecognizer)
         {
             if (newRecognizer != null && this.activeRecognizer == newRecognizer && this.IsCapturingGestures)
             {
@@ -180,41 +178,43 @@ namespace PosterAlignment.InputUtilities
         }
 
 
-        private void Recognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
+        private void Recognizer_Tapped(TappedEventArgs args)
         {
-            this.ClickCount = (ushort)tapCount;
+			this.ClickCount = (ushort)args.tapCount;
             this.isReleased = true;
         }
 
 
-        private void NavigationRecognizer_NavigationStartedEvent(InteractionSourceKind source, Vector3 relativePosition,
-            Ray ray)
+        private void NavigationRecognizer_NavigationStarted(NavigationStartedEventArgs args)
         {
-            this.ClickCount = 1;
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
+			this.ClickCount = 1;
             this.isReleased = false;
-            this.navigationPosition = relativePosition;
+            this.navigationPosition = position;
         }
 
-        private void NavigationRecognizer_NavigationUpdatedEvent(InteractionSourceKind source, Vector3 relativePosition,
-            Ray ray)
+        private void NavigationRecognizer_NavigationUpdated(NavigationUpdatedEventArgs args)
         {
-            this.ClickCount = 0;
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
+			this.ClickCount = 0;
             this.isReleased = false;
-            this.navigationPosition = relativePosition;
+            this.navigationPosition = position;
         }
 
-        private void NavigationRecognizer_NavigationCompletedEvent(InteractionSourceKind source, Vector3 relativePosition,
-            Ray ray)
+        private void NavigationRecognizer_NavigationCompleted(NavigationCompletedEventArgs args)
         {
-            this.ClickCount = 0;
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
+			this.ClickCount = 0;
             this.isReleased = true;
             this.IsCancelled = false;
-            this.navigationPosition = relativePosition;
+            this.navigationPosition = position;
         }
 
-        private void NavigationRecognizer_NavigationCanceledEvent(InteractionSourceKind source, Vector3 relativePosition,
-            Ray ray)
-        {
+        private void NavigationRecognizer_NavigationCanceled(NavigationCanceledEventArgs args)
+		{
             this.ClickCount = 0;
             this.isReleased = true;
             this.IsCancelled = true;
@@ -222,35 +222,39 @@ namespace PosterAlignment.InputUtilities
         }
 
 
-        private void ManipulationRecognizer_ManipulationStartedEvent(InteractionSourceKind source, Vector3 position, Ray ray)
+        private void ManipulationRecognizer_ManipulationStarted(ManipulationStartedEventArgs args)
         {
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
             this.ClickCount = 1;
             this.isReleased = false;
             this.manipulationPosition = position;
             this.manipulationPrevious = position;
         }
 
-        private void ManipulationRecognizer_ManipulationUpdatedEvent(InteractionSourceKind source, Vector3 position, Ray ray)
-        {
-            this.ClickCount = 0;
+        private void ManipulationRecognizer_ManipulationUpdated(ManipulationUpdatedEventArgs args)
+		{
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
+			this.ClickCount = 0;
             this.isReleased = false;
             this.manipulationPrevious = this.manipulationPosition;
             this.manipulationPosition = position;
         }
 
-        private void ManipulationRecognizer_ManipulationCompletedEvent(InteractionSourceKind source, Vector3 position,
-            Ray ray)
-        {
-            this.ClickCount = 0;
+        private void ManipulationRecognizer_ManipulationCompleted(ManipulationCompletedEventArgs args)
+		{
+			Vector3 position;
+			args.sourcePose.TryGetPosition(out position);
+			this.ClickCount = 0;
             this.isReleased = true;
             this.IsCancelled = false;
             this.manipulationPrevious = this.manipulationPosition;
             this.manipulationPosition = position;
         }
 
-        private void ManipulationRecognizer_ManipulationCanceledEvent(InteractionSourceKind source, Vector3 position,
-            Ray ray)
-        {
+        private void ManipulationRecognizer_ManipulationCanceled(ManipulationCanceledEventArgs args)
+		{
             this.ClickCount = 0;
             this.isReleased = true;
             this.IsCancelled = true;
@@ -258,13 +262,13 @@ namespace PosterAlignment.InputUtilities
             this.manipulationPosition = Vector3.zero;
         }
 
-        private void InteractionManager_SourcePressed(InteractionSourceState state)
-        {
+        private void InteractionManager_InteractionSourcePressed(InteractionSourcePressedEventArgs args)
+		{
             this.ClickCount = 1;
         }
 
-        private void InteractionManager_SourceReleased(InteractionSourceState state)
-        {
+        private void InteractionManager_InteractionSourceReleased(InteractionSourceReleasedEventArgs args)
+		{
             this.isReleased = true;
         }
 

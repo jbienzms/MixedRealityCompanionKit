@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.VR.WSA.WebCam;
+
 namespace PosterAlignment
 {
     /// <summary>
@@ -141,7 +141,7 @@ namespace PosterAlignment
             }
         }
 
-        private static Matrix4x4 TuneProjectionMatrix(PhotoCaptureFrame frame)
+        private static Matrix4x4 TuneProjectionMatrix(UnityEngine.XR.WSA.WebCam.PhotoCaptureFrame frame)
         {
             Matrix4x4 camProj;
             if (!frame.TryGetProjectionMatrix(0.0f, 1.0f, out camProj))
@@ -151,7 +151,7 @@ namespace PosterAlignment
             return camProj;
         }
 
-        private bool OnCaptureCompleted(PhotoCaptureFrame frame)
+        private bool OnCaptureCompleted(UnityEngine.XR.WSA.WebCam.PhotoCaptureFrame frame)
         {
             if (this.isProcessingImage)
             {

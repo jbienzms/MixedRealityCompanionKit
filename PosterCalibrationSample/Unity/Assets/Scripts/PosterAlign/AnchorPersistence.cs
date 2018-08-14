@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using UnityEngine;
-using UnityEngine.VR.WSA.Persistence;
+
 using System;
 namespace PosterAlignment
 {
@@ -12,7 +12,7 @@ namespace PosterAlignment
     {
         public event Action AnchorLoaded;
         public bool AutoLoadOnEnable = true;
-        private WorldAnchorStore worldAnchorStore;
+        private UnityEngine.XR.WSA.Persistence.WorldAnchorStore worldAnchorStore;
         private PersistenceSaveLoad saveLoad;
 
         private bool _isAnchored;
@@ -35,7 +35,7 @@ namespace PosterAlignment
 
             if (worldAnchorStore == null)
             {
-                WorldAnchorStore.GetAsync(delegate (WorldAnchorStore store)
+                UnityEngine.XR.WSA.Persistence.WorldAnchorStore.GetAsync(delegate (UnityEngine.XR.WSA.Persistence.WorldAnchorStore store)
                 {
                     this.worldAnchorStore = store;
                     if (AutoLoadOnEnable)

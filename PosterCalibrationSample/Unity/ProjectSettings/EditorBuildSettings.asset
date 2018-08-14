@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MultiZone.unity
-  - enabled: 1
     path: Assets/SingleZone.unity
+    guid: 29dfa0a1bf5025e4eb7163aef1a4555d
+  - enabled: 1
+    path: Assets/MultiZone.unity
+    guid: 7dfefb5bc5996e74493c03d65d7d2dcb
+  m_configObjects: {}

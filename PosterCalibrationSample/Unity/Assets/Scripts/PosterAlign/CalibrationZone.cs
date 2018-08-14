@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using UnityEngine;
-using UnityEngine.VR.WSA;
+
 using System;
 namespace PosterAlignment
 {
@@ -102,8 +102,8 @@ namespace PosterAlignment
             if (removeSavedLocation)
                 return persistence.ClearAnchor();
 
-            if (GetComponent<WorldAnchor>() != null)
-                DestroyImmediate(GetComponent<WorldAnchor>());
+            if (GetComponent<UnityEngine.XR.WSA.WorldAnchor>() != null)
+                DestroyImmediate(GetComponent<UnityEngine.XR.WSA.WorldAnchor>());
             return true;
         }
 

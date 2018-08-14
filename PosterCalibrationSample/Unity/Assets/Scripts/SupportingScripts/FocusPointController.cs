@@ -3,7 +3,7 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.VR.WSA;
+using UnityEngine.XR.WSA;
 using PosterAlignment.InputUtilities;
 
 namespace PosterAlignment

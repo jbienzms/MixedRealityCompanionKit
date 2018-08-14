@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using UnityEngine;
-using UnityEngine.VR.WSA.WebCam;
+
 
 using System;
 using System.Collections.Generic;
@@ -33,9 +33,9 @@ namespace PosterAlignment
         public int MinWidth = 1000;
 
         // Camera Capture
-        private PhotoCapture PhotoCap;
-        private volatile PhotoCaptureFrame mFrameToProcess = null;
-        private volatile PhotoCaptureFrame mFrameBeingProcessed = null;
+        private UnityEngine.XR.WSA.WebCam.PhotoCapture PhotoCap;
+        private volatile UnityEngine.XR.WSA.WebCam.PhotoCaptureFrame mFrameToProcess = null;
+        private volatile UnityEngine.XR.WSA.WebCam.PhotoCaptureFrame mFrameBeingProcessed = null;
         public UnityEngine.Resolution PhotoCapCamResolution;
 
         // Camera setup state
@@ -59,7 +59,7 @@ namespace PosterAlignment
         /// <returns>
         /// true if finished with the frame
         /// </returns>
-        public delegate bool FrameProcessDelegate(PhotoCaptureFrame frame);
+        public delegate bool FrameProcessDelegate(UnityEngine.XR.WSA.WebCam.PhotoCaptureFrame frame);
         private List<FrameProcessDelegate> frameProcessingCallbacks = new List<FrameProcessDelegate>();
 
         public override void InitializeInternal()
@@ -112,7 +112,7 @@ namespace PosterAlignment
 
             try
             {
-                var reses = PhotoCapture.SupportedResolutions.OrderByDescending(k => k.width);
+                var reses = UnityEngine.XR.WSA.WebCam.PhotoCapture.SupportedResolutions.OrderByDescending(k => k.width);
                 if (reses.Count() > 0)
                 {
                     PhotoCapCamResolution = reses.First();
@@ -127,7 +127,7 @@ namespace PosterAlignment
                     // or the object has been released by the "ReleaseCamera" function.
                     if (PhotoCap == null)
                     {
-                        PhotoCapture.CreateAsync(false, delegate (PhotoCapture captureObject)
+                        UnityEngine.XR.WSA.WebCam.PhotoCapture.CreateAsync(false, delegate (UnityEngine.XR.WSA.WebCam.PhotoCapture captureObject)
                         {
                             PhotoCap = captureObject;
 
@@ -137,13 +137,13 @@ namespace PosterAlignment
                     }
                     else
                     {
-                        CameraParameters cameraParameters = new CameraParameters();
+                        UnityEngine.XR.WSA.WebCam.CameraParameters cameraParameters = new UnityEngine.XR.WSA.WebCam.CameraParameters();
                         cameraParameters.hologramOpacity = 0.0f;
                         cameraParameters.cameraResolutionWidth = PhotoCapCamResolution.width;
                         cameraParameters.cameraResolutionHeight = PhotoCapCamResolution.height;
-                        cameraParameters.pixelFormat = CapturePixelFormat.BGRA32;
+                        cameraParameters.pixelFormat = UnityEngine.XR.WSA.WebCam.CapturePixelFormat.BGRA32;
 
-                        PhotoCap.StartPhotoModeAsync(cameraParameters, delegate (PhotoCapture.PhotoCaptureResult result)
+                        PhotoCap.StartPhotoModeAsync(cameraParameters, delegate (UnityEngine.XR.WSA.WebCam.PhotoCapture.PhotoCaptureResult result)
                         {
                             if (result.success)
                             {
@@ -262,7 +262,7 @@ namespace PosterAlignment
 
             asyncCameraReleaseStarted = true;
 
-            PhotoCap.StopPhotoModeAsync((PhotoCapture.PhotoCaptureResult result) =>
+            PhotoCap.StopPhotoModeAsync((UnityEngine.XR.WSA.WebCam.PhotoCapture.PhotoCaptureResult result) =>
             {
                 asyncCameraReleaseStarted = false;
 

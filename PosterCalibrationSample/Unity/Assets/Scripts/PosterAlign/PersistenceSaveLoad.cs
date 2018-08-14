@@ -3,8 +3,8 @@
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEngine.VR.WSA;
-using UnityEngine.VR.WSA.Persistence;
+
+
 namespace PosterAlignment
 {
     [Serializable]
@@ -18,7 +18,7 @@ namespace PosterAlignment
             return path;
         }
 
-        public bool DeleteAllWorldAnchorFiles(ref WorldAnchorStore store)
+        public bool DeleteAllWorldAnchorFiles(ref UnityEngine.XR.WSA.Persistence.WorldAnchorStore store)
         {
             if (store == null)
             {
@@ -47,7 +47,7 @@ namespace PosterAlignment
             return true;
         }
 
-        public bool DeleteLocation(GameObject gameObject, ref WorldAnchorStore store)
+        public bool DeleteLocation(GameObject gameObject, ref UnityEngine.XR.WSA.Persistence.WorldAnchorStore store)
         {
             if (gameObject == null)
             {
@@ -62,7 +62,7 @@ namespace PosterAlignment
 
             Debug.Log("Attempting delete world position\r\n   " + gameObject.transform.localPosition.ToString("0.00"));
 
-            var anchor = gameObject.GetComponent<WorldAnchor>();
+            var anchor = gameObject.GetComponent<UnityEngine.XR.WSA.WorldAnchor>();
             if (anchor != null)
             {
                 DestroyImmediate(anchor);
@@ -91,7 +91,7 @@ namespace PosterAlignment
             return true;
         }
 
-        public bool SaveLocation(GameObject gameObject, ref WorldAnchorStore store)
+        public bool SaveLocation(GameObject gameObject, ref UnityEngine.XR.WSA.Persistence.WorldAnchorStore store)
         {
             if (gameObject == null)
             {
@@ -115,10 +115,10 @@ namespace PosterAlignment
             var storageIdString = storageId.ToString();
 
             // add a new anchor to gameObject
-            gameObject.AddComponent<WorldAnchor>();
+            gameObject.AddComponent<UnityEngine.XR.WSA.WorldAnchor>();
             
             // get instance of anchor to save in worldAnchor store
-            var anchor = gameObject.GetComponent<WorldAnchor>();
+            var anchor = gameObject.GetComponent<UnityEngine.XR.WSA.WorldAnchor>();
             if (anchor != null)
             {
                 success = store.Save(storageIdString, anchor);
@@ -150,7 +150,7 @@ namespace PosterAlignment
             return true;
         }
 
-        public bool LoadLocation(GameObject gameObject, ref WorldAnchorStore store)
+        public bool LoadLocation(GameObject gameObject, ref UnityEngine.XR.WSA.Persistence.WorldAnchorStore store)
         {
             if (gameObject == null)
             {
